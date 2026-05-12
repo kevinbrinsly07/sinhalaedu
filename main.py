@@ -2,6 +2,8 @@
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import HTMLResponse
 from contextlib import asynccontextmanager
 
 from config import settings
@@ -22,6 +24,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Serve simple static frontend for quick status UI
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 
 @app.get("/", tags=["health"])
@@ -48,6 +53,16 @@ async def health_check():
 app.include_router(papers.router, prefix="/api/v1/papers", tags=["papers"])
 app.include_router(materials.router, prefix="/api/v1/materials", tags=["materials"])
 app.include_router(exams.router, prefix="/api/v1/exams", tags=["exams"])
+
+
+@app.get("/status-ui", response_class=HTMLResponse, tags=["health"])
+async def status_ui():
+    """Simple status UI that loads the root health JSON."""
+    try:
+        with open("static/status.html", "r", encoding="utf-8") as f:
+            return HTMLResponse(f.read())
+    except Exception:
+        return HTMLResponse("<html><body><h1>Status UI not found</h1></body></html>")
 
 
 if __name__ == "__main__":
