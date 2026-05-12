@@ -68,7 +68,7 @@ mkdir -p data/vectors logs
 STEP 6: Run the Application
 ============================
 # Development mode:
-python main.py
+python3 main.py
 
 # Production mode with multiple workers:
 uvicorn main:app --host 0.0.0.0 --port 8000 --workers 4
@@ -113,6 +113,11 @@ docker-compose down
 STEP 4: Rebuild after code changes
 ===================================
 docker-compose up -d --build
+
+
+If you see a `ModuleNotFoundError` for `fastapi`, `pydantic_settings`, or any other package, you are running outside the container or outside the virtual environment. Use Docker Compose above, or activate the venv and install dependencies with `pip install -r requirements.txt`.
+
+If you want to run locally without Docker, use `python3`, not `python`, on macOS.
 """
 
 

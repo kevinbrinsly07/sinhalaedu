@@ -1,7 +1,16 @@
 """Configuration management for the Sinhala Exam Paper Generator."""
 
 from typing import Optional
-from pydantic_settings import BaseSettings
+
+try:
+    from pydantic_settings import BaseSettings
+except ImportError:  # pragma: no cover - compatibility fallback
+    try:
+        # Pydantic v2 exposes v1 API under pydantic.v1
+        from pydantic.v1 import BaseSettings
+    except ImportError:
+        # Pydantic v1 direct import
+        from pydantic import BaseSettings
 
 
 class Settings(BaseSettings):
